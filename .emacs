@@ -27,9 +27,13 @@
 (package-initialize)
 
 ;; All the packages
-(defvar matt/packages '(helm
+(defvar matt/packages '(cider
+                        clojure-mode
+                        clojure-snippets
+                        helm
                         helm-projectile
-                        helm-themes))
+                        helm-themes
+                        paredit))
 
 ;; Load all the packages!
 (mapc (lambda (package)
@@ -101,12 +105,79 @@
 (setq-default c-default-style "linux")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;; Paredit ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'paredit)
+
+(defun maybe-map-paredit-newline ()
+  (unless (or (memq major-mode '(inferior-emacs-lisp-mode cider-repl-mode))
+              (minibufferp))
+    (local-set-key (kbd "RET") 'paredit-newline)))
+
+(add-hook 'paredit-mode-hook 'maybe-map-paredit-newline)
+(add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+
+(require 'eldoc)
+(eldoc-add-command
+ 'paredit-backward-delete
+ 'paredit-close-round)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;; Clojure ;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Cider
+(require 'cider)
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'cider-repl-mode))
+
+;; (defun set-auto-complete-as-completion-at-point-function ()
+;;   (setq completion-at-point-functions '(auto-complete)))  
+;; (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; (add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; (add-hook 'clojure-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; (add-hook 'cider-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
+;; C-c C-e to eval s-expression
+(add-hook 'clojure-mode-hook 
+    (lambda ()
+      (local-set-key (kbd "C-c C-e") 'cider-pprint-eval-last-sexp)))
+
+;; Stuart Sierra's refresh workflow
+(defun cider-namespace-refresh ()
+  (interactive)
+  (cider-interactive-eval
+   "(require 'clojure.tools.namespace.repl)
+    (clojure.tools.namespace.repl/refresh)"))
+
+(define-key clojure-mode-map (kbd "M-r") 'cider-namespace-refresh)
+(add-to-list 'lisp-mode-hook 'enable-paredit-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;; Python ;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Python-mode
+(require 'python-mode)
+
+;; Switch to the interpreter after executing code
+(setq-default py-shell-switch-buffers-on-execute-p t)
+(setq-default py-switch-buffers-on-execute-p t)
+
+;; Don't split windows
+(setq-default py-split-windows-on-execute-p nil)
+
+;; Try to automagically figure out indentation
+(setq-default py-smart-indentation t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Custom Set Stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
