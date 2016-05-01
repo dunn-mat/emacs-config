@@ -37,6 +37,7 @@
                         helm-themes
                         multiple-cursors
                         paredit
+                        python-mode
                         skewer-mode))
 
 ;; Load all the packages!
