@@ -26,14 +26,18 @@
              '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
 (package-initialize)
 
-;; All the packages
-(defvar matt/packages '(cider
+;; I want all the toys mommy!
+(defvar matt/packages '(auto-complete
+                        cider
                         clojure-mode
                         clojure-snippets
+                        exec-path-from-shell
                         helm
                         helm-projectile
                         helm-themes
-                        paredit))
+                        multiple-cursors
+                        paredit
+                        skewer-mode))
 
 ;; Load all the packages!
 (mapc (lambda (package)
@@ -41,7 +45,11 @@
           (package-install package)))
       matt/packages)
 
-;; helm-config so you can you know, use helm
+;; Make emacs use shell environment vars
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
+;; helm-config so you can, you know, use helm
 (require 'helm)
 (require 'helm-config)
 (helm-mode 1)
@@ -72,7 +80,7 @@
 ;; LOL who types out yes?
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; share OS clipboard, you know for when you copy pasta stack overflow
+;; share OS clipboard, you know, for when you copy pasta stack overflow
 (setq-default x-select-enable-clipboard t)
 
 ;; Highlight open and close parenthesis when the point is on them.
@@ -89,6 +97,14 @@
 (setq-default mouse-wheel-progressive-speed t)
 (setq-default mouse-wheel-follow-mouse 't)
 (setq-default scroll-step 1)
+
+;; Emacs Desktop!
+(setq desktop-path '("~/.emacs.d/"))
+(setq desktop-dirname "~/.emacs.d/")
+(setq desktop-base-file-name "emacs-desktop")
+
+;; Font
+(set-frame-font "Menlo Regular 14")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Language Specifics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -178,6 +194,20 @@
 
 ;; Try to automagically figure out indentation
 (setq-default py-smart-indentation t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;; Web Dev ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Skewer Mode
+(setq-default skewer-mode t)
+(add-hook 'html-mode-hook 'skewer-html-mode)
+(add-hook 'css-mode-hook 'skewer-css-mode)
+(add-hook 'js2-mode-hook 'skewer-mode)
+
+(require 'simple-httpd)
+;; set root folder for httpd server
+(setq httpd-root "")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Custom Set Stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
