@@ -21,7 +21,7 @@
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives 
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives
              '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
 (package-initialize)
@@ -38,7 +38,8 @@
                         multiple-cursors
                         paredit
                         python-mode
-                        skewer-mode))
+                        skewer-mode
+                        sr-speedbar))
 
 ;; Load all the packages!
 (mapc (lambda (package)
@@ -53,11 +54,19 @@
 ;; helm-config so you can, you know, use helm
 (require 'helm)
 (require 'helm-config)
-(helm-mode 1)
 (setq-default helm-split-window-in-side-p t)
+(helm-mode 1)
 (global-set-key [(meta x)] 'helm-M-x)
 (global-set-key [(ctrl x) (ctrl f)] 'helm-find-files)
 (global-set-key [(ctrl x) (b)] 'helm-buffers-list)
+
+;; Start with speedbar
+
+(setq-default speedbar-show-unknown-files t)
+(setq-default sr-speedbar-default-width 20)
+(setq-default sr-speedbar-width-x 20)
+(setq-default sr-speedbar-width-console 20)
+(sr-speedbar-open)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Custom Keys  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,7 +114,9 @@
 (setq desktop-base-file-name "emacs-desktop")
 
 ;; Font
-(set-frame-font "Menlo Regular 14")
+(set-frame-font "Chalkboard-15")
+
+;; Open Emacs in maximized screen
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Language Specifics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -208,7 +219,7 @@
 
 (require 'simple-httpd)
 ;; set root folder for httpd server
-(setq httpd-root "")
+(setq httpd-root "/Users/matthewdunn/dunn-mat.github.io")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Custom Set Stuff ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -219,7 +230,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (manoj-dark))))
+ '(custom-enabled-themes (quote (manoj-dark)))
+ '(initial-frame-alist (quote ((fullscreen . maximized))))
+ '(package-selected-packages
+   (quote
+    (sr-speedbar skewer-mode python-mode paredit multiple-cursors helm-themes helm-projectile helm exec-path-from-shell clojure-snippets cider auto-complete))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
