@@ -31,14 +31,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Import packages and add additional package repositories
-(require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives 
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives
-             '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
-(package-initialize)
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-refresh-contents))
+
+
 
 ;; I want all the toys mommy!
 (defvar matt/packages '(auto-complete
@@ -49,6 +51,7 @@
                         helm
                         helm-projectile
                         helm-themes
+                        json-mode
                         multiple-cursors
                         paredit
                         python-mode
@@ -248,7 +251,7 @@
  '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(package-selected-packages
    (quote
-    (lua-mode sr-speedbar skewer-mode python-mode paredit multiple-cursors helm-themes helm-projectile helm exec-path-from-shell clojure-snippets cider auto-complete))))
+    (rjsx-mode json-mode lua-mode sr-speedbar skewer-mode python-mode paredit multiple-cursors helm-themes helm-projectile helm exec-path-from-shell clojure-snippets cider auto-complete))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
